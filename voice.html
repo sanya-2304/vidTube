@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Search</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #search-container {
+            text-align: center;
+        }
+
+        #search-input {
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        #search-btn {
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="search-container">
+        <input type="text" id="search-input" placeholder="Search by voice">
+        <button id="search-btn">Search</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('search-input');
+            const searchBtn = document.getElementById('search-btn');
+
+            searchBtn.addEventListener('click', () => {
+                const query = searchInput.value;
+                if (query.trim() !== '') {
+                    // Direct to YouTube search with the query
+                    window.location.href = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+                }
+            });
+
+            // Speech recognition
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition)();
+            recognition.lang = 'en-US';
+
+            recognition.onresult = (event) => {
+                const voiceText = event.results[0][0].transcript;
+                searchInput.value = voiceText;
+            };
+
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+            };
+
+            searchInput.addEventListener('focus', () => {
+                recognition.start();
+            });
+
+            searchInput.addEventListener('blur', () => {
+                recognition.stop();
+            });
+        });
+    </script>
+</body>
+</html>
